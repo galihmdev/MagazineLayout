@@ -387,7 +387,8 @@ public final class MagazineLayout: UICollectionViewLayout {
         continue
       }
 
-      layoutAttributes.frame = backgroundFrame
+      //layoutAttributes.frame = backgroundFrame
+      layoutAttributes.isHidden = backgroundFrame.size.height.isZero || backgroundFrame.size.width.isZero
       layoutAttributesInRect.append(layoutAttributes)
     }
 
@@ -421,7 +422,7 @@ public final class MagazineLayout: UICollectionViewLayout {
       // On iOS 9, `layoutAttributesForItem(at:)` can be invoked for an index path of a new item
       // before the layout is notified of this new item (through either `prepare` or
       // `prepare(forCollectionViewUpdates:)`). This seems to be fixed in iOS 10 and higher.
-      assertionFailure("`{\(indexPath.section), \(indexPath.item)}` is out of bounds of the section models / item models array.")
+      //assertionFailure("`{\(indexPath.section), \(indexPath.item)}` is out of bounds of the section models / item models array.")
 
       // Returning `nil` rather than default/frameless layout attributes causes internal exceptions
       // within `UICollecionView`, which is why we don't return `nil` here.
@@ -522,6 +523,10 @@ public final class MagazineLayout: UICollectionViewLayout {
     at elementIndexPath: IndexPath)
     -> UICollectionViewLayoutAttributes?
   {
+    guard !elementIndexPath.isEmpty else {
+        return nil
+    }
+    
     if modelState.sectionIndicesToInsert.contains(elementIndexPath.section) {
       let attributes = layoutAttributesForSupplementaryView(
         ofKind: elementKind,
@@ -1015,7 +1020,7 @@ public final class MagazineLayout: UICollectionViewLayout {
       // On iOS 9, `layoutAttributesForItem(at:)` can be invoked for an index path of a new
       // supplementary view before the layout is notified of this new item (through either `prepare`
       // or `prepare(forCollectionViewUpdates:)`). This seems to be fixed in iOS 10 and higher.
-      assertionFailure("`\(indexPath.section)` is out of bounds of the section models array.")
+      //assertionFailure("`\(indexPath.section)` is out of bounds of the section models array.")
 
       // Returning `nil` rather than default/frameless layout attributes causes internal exceptions
       // within `UICollecionView`, which is why we don't return `nil` here.

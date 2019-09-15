@@ -165,14 +165,19 @@ struct SectionModel {
   mutating func calculateFrameForBackground() -> CGRect? {
     let calculatedHeight = calculateHeight()
 
+    /*
     backgroundModel?.originInSection = CGPoint(
       x: metrics.sectionInsets.left,
       y: metrics.sectionInsets.top)
+     */
+    backgroundModel?.originInSection = .zero
     backgroundModel?.size.width = metrics.width
+    /*
     backgroundModel?.size.height = calculatedHeight -
       metrics.sectionInsets.top -
       metrics.sectionInsets.bottom
-
+    */
+    backgroundModel?.size.height = calculatedHeight
     if let backgroundModel = backgroundModel {
       return CGRect(
         origin: CGPoint(x: backgroundModel.originInSection.x, y: backgroundModel.originInSection.y),
@@ -430,6 +435,13 @@ struct SectionModel {
   }
 
   private mutating func calculateElementFramesIfNecessary() {
+    // ensure zero height for an empty section
+    if itemModels.isEmpty && headerModel == nil && footerModel == nil {
+        calculatedHeight = 0
+        backgroundModel?.size.height = 0
+        return
+    }
+    
     guard var rowIndex = indexOfFirstInvalidatedRow else { return }
     guard rowIndex >= 0 else {
       assertionFailure("Invalid `rowIndex` / `indexOfFirstInvalidatedRow` (\(rowIndex)).")
